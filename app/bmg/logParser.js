@@ -94,7 +94,7 @@ class Parser {
 		}
 		this.currentSubphase.events.push({
 			type: 'chat',
-			player: this.playersByName[name].ign, // force IGN
+			player: this.playersByName[name] && this.playersByName[name].ign, // force IGN
 			text: message,
 			scope: scope
 		})
@@ -139,10 +139,10 @@ class Parser {
 		if (el.html().indexOf('lynched') != -1) {
 			event.killer = 'town'
 		}
-		if (event.player.left) {
+		if (this.playersByIGN[name].left) {
 			event.killer = 'suicide'
 		}
-		if (event.player.executed) {
+		if (this.playersByIGN[name].executed) {
 			event.killer = 'jailor'
 		}
 		this.currentSubphase.events.push(event)
@@ -167,7 +167,7 @@ class Parser {
 		const transMatch = transRegexp.exec(el.html())
 		const witchRegexp = /^Witch made (.+) target (.+)\.$/
 		const witchMatch = witchRegexp.exec(el.html())
-		const leaveRegexp = /^(.+) has left the game.$/
+		const leaveRegexp = /^(.*) has left the game.$/ // Sometimes the name is not present
 		const leaveMatch = leaveRegexp.exec(el.html())
 		const voteRegexp = /^(.+) (abstained|voted guilty|voted innocent).$/
 		const voteMatch = voteRegexp.exec(el.html());
@@ -212,9 +212,9 @@ class Parser {
 			const player = this.playersByName[leaveMatch[1]]
 			const event = {
 				type: 'leave',
-				player: player.ign
+				player: player ? player.ign : null
 			}
-			player.left = true;
+			if (player) player.left = true;
 			this.currentSubphase.events.push(event)
 		} else if (voteMatch) {
 			const type = {'abstained': 'abstain', 'voted guilty': 'guilty', 'voted innocent': 'innocent'}[voteMatch[2]]
@@ -254,7 +254,8 @@ class Parser {
 				veteran: /^(.+) attacked by a Veteran.$/,
 				arsonist: /^(.+) was ignited by an Arsonist.$/,
 				werewolf: /^(.+) was attacked by a Werewolf.$/,
-				'vh-visit': /^(.+) visited a VampireHunter.$/
+				'vh-visit': /^(.+) visited a VampireHunter.$/,
+				vampire: /^(.+) was attacked by a Vampire.$/
 			}
 			for(let attacker in attacks) {
 				const match = attacks[attacker].exec(el.html());
@@ -276,7 +277,7 @@ class Parser {
 	parseNote(html) {
 		const parsed = jQuery(html)
 		let owner;
-		let lines = []
+		let lines = ['']
 		parsed.each((idx, el) => {
 			if(el instanceof HTMLSpanElement) {
 				const ownerString = el.innerHTML
