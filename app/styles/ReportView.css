@@ -1,0 +1,7 @@
+.default {
+	display: flex
+}
+
+.default > * {
+	flex-basis: 50%;
+}

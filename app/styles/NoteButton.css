@@ -1,0 +1,11 @@
+.default {
+	appearance: none;
+	font-family: 'Raleway';
+	background-color: rgba(127, 127, 127, 0.2);
+	padding: 3px;
+	border-radius: 2px;
+	border: none;
+	cursor: pointer;
+	font-size: inherit;
+	margin: 0;
+}

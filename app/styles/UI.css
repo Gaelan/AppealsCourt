@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,600,600i&subset=latin-ext');
+
+:global body {
+	height: 100vh;
+	margin: 0;
+	font-family: Raleway;
+}
+.default {
+	height: 100vh;
+}

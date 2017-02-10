@@ -1,0 +1,30 @@
+.default {
+	border-radius: 5px;
+	font-size: 24px;
+	text-align: center;
+	background-color: white;
+	padding: 10px;
+	max-width: 50%;
+}
+
+.button {
+	appearance: none;
+	background-color: #EEE;
+	border: none;
+	display: block;
+	padding: 5px;
+	width: 100%;
+	font: inherit;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.innoButton {
+	composes: button;
+	background-color: rgba(0, 255, 0, 0.2);
+}
+
+.guiltyButton {
+	composes: button;
+	background-color: rgba(255, 0, 0, 0.2);
+}

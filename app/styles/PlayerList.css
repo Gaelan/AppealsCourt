@@ -1,0 +1,13 @@
+.ign {
+	padding: 3px;
+}
+
+.deathPhase {
+	font-family: 'Raleway';
+	background-color: rgba(127, 127, 127, 0.2);
+	padding: 3px;
+	border-radius: 2px;
+}
+
+.outer {
+}

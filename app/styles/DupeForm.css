@@ -1,0 +1,43 @@
+.default {
+	display: flex;
+	flex-direction: column;
+}
+
+.menu {
+	width: 400px;
+	margin: 0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.box {
+	margin: 0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	width: 394px;
+	height: 10ex;
+	border-radius: 5px;
+	border-color: grey;
+}
+
+.button {
+	margin: 0;
+	appearance: none;
+	background-color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px;
+	cursor: pointer;
+	font: inherit;
+}
+
+:global .Popover-body {
+  padding: 2rem 4rem;
+  background: hsl(0, 0%, 27%);
+  color: white;
+  border-radius: 0.3rem;
+}
+
+:global .Popover-tipShape {
+  fill: hsl(0, 0%, 27%)
+}

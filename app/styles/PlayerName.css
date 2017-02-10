@@ -1,0 +1,86 @@
+.default {
+	font-weight: bold;
+}
+
+.highlight {
+	background-color: black;
+	border-radius: 2px;
+	padding: 3px;
+	padding-left: 0;
+	padding-right: 0;
+	color: white;
+}
+
+.role {
+	padding: 3px;
+	border-radius: 2px;
+	background-color: rgba(127, 127, 127, 0.2);
+}
+
+.role-sk {
+	composes: role;
+	background-color: rgba(0, 0, 255, 0.2);
+}
+
+.role-town {
+	composes: role;
+	background-color: rgba(0, 255, 0, 0.2);
+}
+
+.role-mafia {
+	composes: role;
+	background-color: rgba(255, 0, 0, 0.2);
+}
+
+.role-jester {
+	composes: role;
+	background-color: rgba(127, 0, 0, 0.2);
+}
+
+.role-survivor {
+	composes: role;
+	background-color: rgba(255, 255, 0, 0.2);
+}
+
+.role-amnesiac {
+	composes: role;
+	background-color: rgba(0, 255, 255, 0.2);
+}
+
+.role-executioner {
+	composes: role;
+	background-color: rgba(200, 200, 200, 0.2);
+}
+
+.role-arsonist {
+	composes: role;
+	background-color: rgba(255, 165, 0, 0.2);
+}
+
+.role-witch {
+	composes: role;
+	background-color: rgba(255, 0, 255, 0.2);
+}
+
+.role-werewolf {
+	composes: role;
+	background-color: rgba(165, 42, 42, 0.2);
+}
+
+.role-vampire {
+	composes: role;
+	background-color: rgba(200, 200, 200, 0.2);
+}
+/* These are used for death. They don't really belong here. */
+
+.role-guarding, .role-bodyguard, .role-vigilante, .role-vig-guilt, .role-veteran, .role-jailor, .role-vh-visit {
+	composes: role-town;
+}
+
+.role-sk-visit {
+	composes: role-sk;
+}
+
+.role-suicide {
+	composes: role;
+}
