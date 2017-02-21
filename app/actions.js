@@ -77,6 +77,7 @@ export function init() {
 }
 
 async function getJudgeReportCount() { // returns false if not a judge
+	return false; // Judge disabled at Turd's request.
 	const resp = await fetch(`/Trial/fetch.php?from=menu.php`, {
 		method: 'GET',
 		credentials: 'include'

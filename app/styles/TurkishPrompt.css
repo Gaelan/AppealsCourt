@@ -1,0 +1,6 @@
+.default {
+	padding: 10px;
+	border-bottom: 1px grey solid;
+	display: flex;
+	justify-content: space-between;
+}
