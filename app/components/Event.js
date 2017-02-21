@@ -23,6 +23,7 @@ function DeathEvent(props) {
 function WhisperEvent(props) {
 	return <p className={Styles.default}>
 		<PlayerName name={props.event.player} /> to <PlayerName name={props.event.recipient} />: {props.event.text}
+		{props.event.orig ? <span className={Styles.orig}> {props.event.orig} </span> : null}
 	</p>
 }
 

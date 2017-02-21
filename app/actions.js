@@ -248,7 +248,7 @@ export function translate(report) {
 							event.text = out
 						}])
 					}
-					if(event.type == 'whisper' && wip.turkishPlayers.has(event.from)) {
+					if(event.type == 'whisper' && wip.turkishPlayers.has(event.player)) {
 						translations.push([event.text, (out) => {
 							event.orig = event.text
 							event.text = out
