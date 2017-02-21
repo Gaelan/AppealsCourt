@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1f47ebd46b00ec72ea6d"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "29abfc0bf563f54a2deb"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -835,7 +835,7 @@ var getJudgeReportId = function () {
 						reports = [];
 
 						while ((match = re.exec(text)) !== null) {
-							reports.push(arr[1]);
+							reports.push(match[1]);
 						}
 						filtered = reports.filter(function (id) {
 							var str = id.toString();
