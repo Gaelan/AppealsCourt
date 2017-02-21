@@ -1,7 +1,5 @@
 class Parser {
-	constructor(log, meta) {
-		this.log = log
-		this.meta = meta
+	constructor() {
 		this.phases = []
 		this.players = []
 		this.playersByUsername = {}
@@ -20,15 +18,16 @@ class Parser {
 			ranked: this.ranked,
 			playersByUsername: this.playersByUsername,
 			playersByIGN: this.playersByIGN,
-			reports: this.log.reports[this.meta.Username],
-			reportedPlayer: this.playersByUsername[this.meta.Username].ign,
-			id: this.meta.ReportID,
-			reason: this.meta.Reason
+			reports: this.getReports(),
+			reportedPlayer: this.playersByUsername[this.getUsername()].ign,
+			id: this.getID(),
+			reason: this.getReason(),
+			winner: this.winner,
 		}
 	}
 
 	parsePlayers() {
-		this.players = this.log.players
+		this.players = this.getPlayers()
 		this.players.forEach(player => {
 			this.playersByUsername[player.username] = player
 			this.playersByIGN[player.ign] = player
@@ -36,8 +35,8 @@ class Parser {
 	}
 
 	parseLog() {
-		this.log.html.forEach(htmlString => {
-			const el = jQuery(htmlString)
+		this.getEvents().forEach(rawEl => {
+			const el = jQuery(rawEl)
 			if(el.html().indexOf(': ') != -1) {
 				this.handleChat(el)
 			} else if (el.hasClass('time') || el.hasClass('stage')) {
@@ -226,6 +225,8 @@ class Parser {
 			votesEvent[type].push(voteMatch[1])
 		} else if (el.html() == 'Ranked Game.') {
 			this.ranked = true;
+		} else if (el.html() == 'Stalemate.') {
+			this.winner = 'Stalemate'
 		} else if (winnerMatch) {
 			this.winner = winnerMatch[1].toLowerCase();
 		} else if (reviveMatch) {
@@ -303,8 +304,87 @@ class Parser {
 			player: bitten
 		})
 	}
+
+	getID() {
+		return this.meta.ReportID
+	}
+
+	getReason() {
+		return this.meta.Reason
+	}
+
+	getReason() {
+		return this.meta.Reason
+	}
+
+	getUsername() {
+		return this.meta.Username
+	}
+}
+
+class StageParser extends Parser {
+	constructor(log, meta) {
+		super()
+		this.log = log
+		this.meta = meta
+	}
+
+	getReports() {
+		return this.log.reports[this.meta.Username]
+	}
+
+	getEvents() {
+		return this.log.html
+	}
+
+	getPlayers() {
+		return this.log.players
+	}
+}
+
+class ViewParser extends Parser {
+	constructor(page) {
+		super()
+		const p = new DOMParser()
+		this.page = p.parseFromString(page, 'text/html')
+		this.meta = this.getMeta()
+	}
+
+	getMeta() {
+		const regex = /^\t+data = (\{.+\});$/m
+		let data;
+		Array.from(this.page.scripts).forEach(el => {
+			const match = regex.exec(el.text);
+			if(match) {
+				data = JSON.parse(match[1])
+			}
+		})
+		if(!data) { throw new Error("Couldn't find players") }
+		return data
+	}
+
+	getPlayers() {
+		return this.meta.players
+	}
+
+	getEvents() {
+		return Array.from(this.page.getElementById('reportContent').children)
+	}
+
+	getReports() {
+		return Array.from(this.page.getElementsByClassName('reportDescription')).map(el => {
+			return [undefined, el.textContent]
+		})
+	}
 }
 
 export default function parseLog(log, meta) {
-	return new Parser(log, meta).parse()
+	return new StageParser(log, meta).parse()
+}
+
+export function parseView(page) {
+	console.time('view parse')
+	const p = new ViewParser(page).parse()
+	console.timeEnd('view parse')
+	return p
 }

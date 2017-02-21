@@ -1,4 +1,46 @@
-import parseLog from './bmg/logParser'
+async function loadLogReport(id, dispatch) {
+	const [details, log] = await Promise.all([getReportDetails(id), getReportLog(id)])
+
+	dispatch({type: 'LOAD_REPORT', log: log, meta: details})
+}
+
+async function loadViewReport(id, dispatch) {
+	if (!id) {
+		dispatch({type: 'NO_JUDGE_REPORTS'})
+		loadLogReport(await getReportId(), dispatch)
+		return
+	}
+	const page = await getViewReport(id)
+
+	dispatch({type: 'LOAD_VIEW_REPORT', page})
+}
+
+async function getJudgeReportId() {
+	const re = /\/viewReport.php?id=(\d+)/g;
+	const text = await resp.text();
+	let match;
+	const reports = [];
+	while ((match = re.exec(str)) !== null) {
+		reports.push(arr[1])
+	}
+	const filtered = reports.filter(id => {
+		const str = id.toString()
+		const shard = str.substring(0, str.length - 5)
+		return (localStorage.getItem('judgeskip' + shard) || '').split("\n").indexOf(str) == -1
+	})
+	return filtered[0]
+}
+
+export function skipJudgeReport(id) {
+	return async (dispatch) => {
+		const str = id.toString()
+		const shard = str.substring(0, str.length - 5)
+		const existing = (localStorage.getItem('judgeskip' + shard) || '').split("\n")
+		existing.push(id)
+		localStorage.setItem('judgeskip' + shard, existing.join('\n'))
+		loadViewReport(await getJudgeReportId(), dispatch)
+	}
+}
 
 async function getReportId() {
 	const data = new FormData()
@@ -9,6 +51,31 @@ async function getReportId() {
 		credentials: 'include'
 	})
 	return parseInt(await resp.text())
+}
+
+export function init() {
+	return async dispatch => {
+		let num
+		if (num = await getJudgeReportCount()) {
+			dispatch({type: 'IS_JUDGE', judgeQueue: num})
+			loadViewReport(await getJudgeReportId(), dispatch)
+		} else {
+			loadLogReport(await getReportId(), dispatch)
+		}
+	}
+}
+
+async function getJudgeReportCount() { // returns false if not a judge
+	const resp = await fetch(`/Trial/fetch.php?from=menu.php`, {
+		method: 'GET',
+		credentials: 'include'
+	})
+
+	const text = await resp.text()
+
+	const match = /Unresolved Reports(\d+)/.exec(text)
+
+	return match && match[1]
 }
 
 async function getReportDetails(id) {
@@ -35,13 +102,13 @@ async function getReportLog(id) {
 	return await resp.json()
 }
 
-export function loadReport() {
-	return async dispatch => {
-		const id = await getReportId()
-		const [details, log] = await Promise.all([getReportDetails(id), getReportLog(id)])
+async function getViewReport(id) {
+	const resp = await fetch(`/Trial/viewReport.php?id=${id}`, {
+		method: 'GET',
+		credentials: 'include'
+	})
 
-		dispatch({type: 'LOAD_REPORT', log: log, meta: details})
-	}
+	return await resp.text()
 }
 
 export function vote(guilty) {
@@ -58,7 +125,31 @@ export function confirmVote(guilty) {
 			body: data,
 			credentials: 'include'
 		})
-		dispatch(loadReport())
+		loadLogReport(await getReportId(), dispatch)
+		const num = await getJudgeReportCount()
+		if (num) { dispatch({type: 'IS_JUDGE', judgeQueue: num})} 
+	}
+}
+
+export function confirmJudgeVote(id, guilty, alternate) { // Alternate = exception/request perma
+	return async (dispatch) => {
+		dispatch({type: 'VOTE_CONFIRMED'})
+		const data = new FormData()
+		data.append('action', 'closereport')
+		data.append('step', '201')
+		data.append('data', JSON.stringify({
+			id: id,
+			vote: guilty ? 'g' : 'i',
+			[guilty ? 'perm' : 'except']: alternate
+		}))
+		await fetch('/Trial/manage/menu.php', {
+			method: 'POST',
+			body: data,
+			credentials: 'include'
+		})
+		loadViewReport(await getJudgeReportId(), dispatch)
+		const num = await getJudgeReportCount()
+		dispatch({type: 'IS_JUDGE', judgeQueue: num})
 	}
 }
 
@@ -94,5 +185,17 @@ export function duplicateReport(reportID, ign, reasonID, description) {
 		}
 		dispatch({type: 'DUPLICATE_SUCCEEDED'})
 		setTimeout(() => {dispatch({type: 'DUPLICATE_HIDE'})}, 5000)
+	}
+}
+
+export function switchQueue(newQueue) {
+	console.log('switching queue', newQueue)
+	return async (dispatch) => {
+		dispatch({type: 'QUEUE_SWITCH'})
+		if(newQueue == 'judge') {
+			loadViewReport(await getJudgeReportId(), dispatch)
+		} else {
+			loadLogReport(await getReportId(), dispatch)
+		}
 	}
 }

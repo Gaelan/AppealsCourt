@@ -6,20 +6,17 @@ let DevTools;
 if (process.env.NODE_ENV !== 'production') {
 	DevTools = require('./DevTools').default
 }
-import createStore from '../createStore'
-import {loadReport} from '../actions'
-
-const store = createStore()
+import {init} from '../actions'
 
 export default class App extends React.Component {
 	render() {
-		return <div><Provider store={store}><UI /></Provider>
-		{ (process.env.NODE_ENV !== 'production') ? <DevTools store={store}/> : null }
+		return <div><Provider store={this.props.store}><UI /></Provider>
+		{ (process.env.NODE_ENV !== 'production') ? <DevTools store={this.props.store}/> : null }
 		</div>
 	}
 
 	componentWillMount() {
-		store.dispatch(loadReport())
+		this.props.store.dispatch(init())
 	}
 }
 

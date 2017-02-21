@@ -10,12 +10,12 @@ import Styles from '../styles/PlayerName.css'
 
 class PlayerName extends React.Component {
 	render() {
+		this._popoverUpdate()
 		if(!this.props.player) {
-			console.log("UNKNOWN PLAYER")
-			return <span> UNKNOWN PLAYER </span>
+			return <span> {this.props.name} </span>
 		}
-		return <Popover isOpen={this.state.open} preferPlace="row" body={<DupeForm duplicate={this.dupe.bind(this)} close={this.toggle.bind(this)}/>}>
-			<span className={Styles.default} onClick={this.toggle.bind(this)}>
+		const el = (
+			<span className={Styles.default} onClick={this.toggle}>
 				<span className={(this.props.player.ign == this.props.reportedPlayer) && Styles.highlight}>
 					<span className={Styles['role-' + roles[this.props.player.role].colorGroup]}>
 						{this.props.player.role}
@@ -24,16 +24,29 @@ class PlayerName extends React.Component {
 				&nbsp;
 				<span> {this.props.player.ign} </span>
 			</span>
-		</Popover>
+		)
+		const ret = this.state.hasOpened ? <Popover isOpen={this.state.open} preferPlace="row" body={<DupeForm duplicate={this.dupe.bind(this)} close={this.toggle.bind(this)}/>}>
+			{el}
+		</Popover> : el
+		return ret
 	}
 
 	constructor() {
 		super()
-		this.state = {open: false}
-	}
-
-	toggle() {
-		this.setState({open: !this.state.open})
+		this.state = {open: false, hasOpened: false}
+		this.toggle = () => {
+			this.setState({hasOpened: true})
+			// popover doesn't close if it starts open
+			if (this.state.hasOpened) {
+				this.setState({open: !this.state.open})
+			} else {
+				this._popoverUpdate = () => {
+					setTimeout((() => this.setState({open: true})), 0)
+					this._popoverUpdate = () => {}
+				}
+			}
+		}
+		this._popoverUpdate = () => {}
 	}
 
 	dupe(reason, desc) {
@@ -41,13 +54,23 @@ class PlayerName extends React.Component {
 	}
 }
 
+let lastState
+let propsHash
 export default connect(
 	(state, props) => {
-		return {
+		if (state != lastState) {
+			lastState = state
+			propsHash = {}
+		}
+		if(propsHash[props.name]) {
+			return propsHash[props.name]
+		}
+		const ret = propsHash[props.name] = {
 			player: state.report.playersByIGN[props.name],
 			reportedPlayer: state.report.reportedPlayer,
 			report: state.report
 		}
+		return ret
 	},
 	{
 		duplicate: duplicateReport

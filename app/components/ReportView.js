@@ -7,7 +7,7 @@ import Styles from '../styles/ReportView.css'
 
 export default function ReportView(props) {
 	return <div className={Styles.default}>
-		<Log report={props.report} />
+		<Log />
 		<Info {...props} />
 	</div>
 }

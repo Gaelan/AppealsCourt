@@ -1,0 +1,22 @@
+.container {
+	flex-grow: 0 !important;
+	display: flex;
+	border-bottom: grey 1px solid;
+	min-height: 27px;
+}
+
+.tab {
+	flex-grow: 1;
+	text-align: center;
+	padding: 5px;
+}
+
+.on {
+	composes: tab;
+	background-color: #EEE;
+}
+
+.off {
+	composes: tab;
+	cursor: pointer;
+}

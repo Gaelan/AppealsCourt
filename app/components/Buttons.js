@@ -6,6 +6,6 @@ export default function Buttons(props) {
 	return <div className={Styles.outer}>
 		<button onClick={props.inno} className={Styles.innocent}>Innocent</button>
 		<button onClick={props.guilty} className={Styles.guilty}>Guilty</button>
-		<button className={Styles.skip}>»</button>
+		<button onClick={props.skip} className={Styles.skip}>»</button>
 	</div>
 }

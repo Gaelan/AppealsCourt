@@ -62,7 +62,8 @@ function LeaveEvent(props) {
 }
 
 function VotesEvent(props) {
-	return <div>
+	console.time('votes')
+	const ret = <div>
 		<p className={Styles.default}> Guilty: {props.event.guilty.map(x => (
 			<span key={x}><PlayerName name={x} />{" "}</span>
 		))} </p>
@@ -73,6 +74,8 @@ function VotesEvent(props) {
 			<span key={x}><PlayerName name={x} />{" "}</span>
 		))} </p>
 	</div>
+	console.timeEnd('votes')
+	return ret
 }
 
 function RememberEvent(props) {
