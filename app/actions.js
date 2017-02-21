@@ -149,7 +149,7 @@ export function confirmJudgeVote(id, guilty, alternate) { // Alternate = excepti
 		formPageData.append('data', 'false')
 		await fetch('/Trial/manage/menu.php', {
 			method: 'POST',
-			body: data,
+			body: formPageData,
 			credentials: 'include'
 		})
 		const data = new FormData()

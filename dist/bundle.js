@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "6ead953093235b5fd104"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7da798ef0816799eeac1"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1222,7 +1222,7 @@ function confirmJudgeVote(id, guilty, alternate) {
 							_context12.next = 7;
 							return fetch('/Trial/manage/menu.php', {
 								method: 'POST',
-								body: data,
+								body: formPageData,
 								credentials: 'include'
 							});
 
