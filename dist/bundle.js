@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "29abfc0bf563f54a2deb"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c83bb81b6678b06aeb2d"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -811,7 +811,7 @@ var getJudgeReportId = function () {
 			while (1) {
 				switch (_context3.prev = _context3.next) {
 					case 0:
-						re = /\/viewReport.php?id=(\d+)/g;
+						re = /\/viewReport.php\?id=(\d+)/g;
 						data = new FormData();
 
 						data.append('action', 'closereport');

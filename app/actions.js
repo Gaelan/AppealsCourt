@@ -16,7 +16,7 @@ async function loadViewReport(id, dispatch) {
 }
 
 async function getJudgeReportId() {
-	const re = /\/viewReport.php?id=(\d+)/g;
+	const re = /\/viewReport.php\?id=(\d+)/g;
 	const data = new FormData()
 	data.append('action', 'closereport')
 	data.append('step', '1')
