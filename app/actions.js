@@ -30,7 +30,7 @@ async function getJudgeReportId() {
 	let match;
 	const reports = [];
 	while ((match = re.exec(text)) !== null) {
-		reports.push(arr[1])
+		reports.push(match[1])
 	}
 	const filtered = reports.filter(id => {
 		const str = id.toString()
