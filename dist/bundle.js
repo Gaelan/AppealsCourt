@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "525b2953ee9661288831"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "bf7542cfc26417168022"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -806,16 +806,30 @@ var loadViewReport = function () {
 
 var getJudgeReportId = function () {
 	var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
-		var re, text, match, reports, filtered;
+		var re, data, resp, text, match, reports, filtered;
 		return regeneratorRuntime.wrap(function _callee3$(_context3) {
 			while (1) {
 				switch (_context3.prev = _context3.next) {
 					case 0:
 						re = /\/viewReport.php?id=(\d+)/g;
-						_context3.next = 3;
+						data = new FormData();
+
+						data.append('action', 'closereport');
+						data.append('step', '1');
+						data.append('data', false);
+						_context3.next = 7;
+						return fetch('/Trial/manage/menu.php', {
+							method: 'POST',
+							body: data,
+							credentials: 'include'
+						});
+
+					case 7:
+						resp = _context3.sent;
+						_context3.next = 10;
 						return resp.text();
 
-					case 3:
+					case 10:
 						text = _context3.sent;
 						match = void 0;
 						reports = [];
@@ -830,7 +844,7 @@ var getJudgeReportId = function () {
 						});
 						return _context3.abrupt('return', filtered[0]);
 
-					case 9:
+					case 16:
 					case 'end':
 						return _context3.stop();
 				}

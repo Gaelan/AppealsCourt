@@ -17,6 +17,15 @@ async function loadViewReport(id, dispatch) {
 
 async function getJudgeReportId() {
 	const re = /\/viewReport.php?id=(\d+)/g;
+	const data = new FormData()
+	data.append('action', 'closereport')
+	data.append('step', '1')
+	data.append('data', false)
+	const resp = await fetch('/Trial/manage/menu.php', {
+		method: 'POST',
+		body: data,
+		credentials: 'include'
+	})
 	const text = await resp.text();
 	let match;
 	const reports = [];
