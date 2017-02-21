@@ -29,7 +29,7 @@ async function getJudgeReportId() {
 	const text = await resp.text();
 	let match;
 	const reports = [];
-	while ((match = re.exec(str)) !== null) {
+	while ((match = re.exec(text)) !== null) {
 		reports.push(arr[1])
 	}
 	const filtered = reports.filter(id => {
