@@ -10,6 +10,7 @@ import Styles from '../styles/Event.css'
 function ChatEvent(props) {
 	return <p className={props.event.scope ? Styles[props.event.scope] : Styles.default}>
 		<PlayerName name={props.event.player} />: {props.event.text}
+		{props.event.orig ? <span className={Styles.orig}> {props.event.orig} </span> : null}
 	</p>
 }
 

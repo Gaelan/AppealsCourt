@@ -1,3 +1,5 @@
+const TURKISH_CHARS = ['ğ', 'ü', 'ı', 'ö', 'ç', 'İ']
+
 class Parser {
 	constructor() {
 		this.phases = []
@@ -6,6 +8,7 @@ class Parser {
 		this.playersByIGN = {}
 		this.playersByName = this.playersByUsername
 		this.ranked = false
+		this.turkishPlayers = new Set()
 	}
 
 	parse() {
@@ -23,6 +26,7 @@ class Parser {
 			id: this.getID(),
 			reason: this.getReason(),
 			winner: this.winner,
+			turkishPlayers: this.turkishPlayers
 		}
 	}
 
@@ -83,6 +87,8 @@ class Parser {
 		}
 		const [name, ...messageParts] = el.html().split(': ')
 		const message = messageParts.join(': ')
+
+		this.checkTurkish(message, this.playersByName[name] && this.playersByName[name].ign)
 
 		let scope;
 
@@ -151,6 +157,7 @@ class Parser {
 
 	handleWhisper(el) {
 		const [_, from, to, message] = /(.+) to (.+): (.*)/.exec(el.html())
+		this.checkTurkish(message, this.playersByName[from] && this.playersByName[from].ign)
 		this.currentSubphase.events.push({
 			type: 'whisper',
 			player: this.playersByName[from].ign,
@@ -294,6 +301,7 @@ class Parser {
 				lines[lines.length - 1] = lines[lines.length - 1] + el.textContent
 			}
 		})
+		this.checkTurkish(lines.join('\n'), owner)
 		return {owner, lines}
 	}
 
@@ -323,6 +331,13 @@ class Parser {
 
 	getUsername() {
 		return this.meta.Username
+	}
+
+	checkTurkish(message, ign) {
+		const turkish = TURKISH_CHARS.some(char => (message.indexOf(char) != -1))
+		if (turkish) {
+			this.turkishPlayers.add(ign)
+		}
 	}
 }
 

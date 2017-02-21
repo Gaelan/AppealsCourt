@@ -21,7 +21,8 @@ export default function reducer(state = {loading: 'Loading report…'}, action) 
 				loading: 'Submitting vote & loading report…',
 				pendingVoteGuilty: null,
 				report: null,
-				pendingVoteGuilty: null
+				pendingVoteGuilty: null,
+				translatorState: null
 			}
 		case 'VOTE_CANCELLED':
 			return { ...state, pendingVoteGuilty: null }
@@ -44,10 +45,15 @@ export default function reducer(state = {loading: 'Loading report…'}, action) 
 				loading: 'Loading report…',
 				pendingVoteGuilty: null,
 				report: null,
-				pendingVoteGuilty: null
+				pendingVoteGuilty: null,
+				translatorState: null
 			}
 		case 'NO_JUDGE_REPORTS':
 			return { ...state, loading: 'No judge reports or all filtered. Loading juror report…' }
+		case 'TRANSLATING':
+			return { ...state, translatorState: 'translating' }
+		case 'TRANSLATED':
+			return { ...state, report: action.report, translatorState: 'done'}
 		default:
 			return state;
 	}

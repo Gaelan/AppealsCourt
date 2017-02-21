@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+
 async function loadLogReport(id, dispatch) {
 	const [details, log] = await Promise.all([getReportDetails(id), getReportLog(id)])
 
@@ -222,11 +224,69 @@ export function duplicateReport(reportID, ign, reasonID, description) {
 export function switchQueue(newQueue) {
 	console.log('switching queue', newQueue)
 	return async (dispatch) => {
-		dispatch({type: 'QUEUE_SWITCH'})
+		dispatch({type: 'QUE(UE_SWITCH'})
 		if(newQueue == 'judge') {
 			loadViewReport(await getJudgeReportId(), dispatch)
 		} else {
 			loadLogReport(await getReportId(), dispatch)
 		}
+	}
+}
+
+export function translate(report) {
+	return async (dispatch) => {
+		dispatch({type: 'TRANSLATING'})
+		const wip = cloneDeep(report)
+		const translations = []
+		wip.phases.forEach(phase => {
+			phase.subphases.forEach(subphase => {
+				subphase.events.forEach(event => {
+					if(event.type == 'chat' && wip.turkishPlayers.has(event.player)) {
+						translations.push([event.text, (out) => {
+							event.orig = event.text
+							event.text = out
+						}])
+					}
+					if(event.type == 'whisper' && wip.turkishPlayers.has(event.from)) {
+						translations.push([event.text, (out) => {
+							event.orig = event.text
+							event.text = out
+						}])
+					}
+				})
+			})
+		})
+		wip.players.forEach(player => {
+			// XXX: This makes players inconsistend because cloneDeep won't keep
+			// the pointers going everywhichway.
+			if(player.will && wip.turkishPlayers.has(player.ign)) {
+				player.will.origLines = []
+				player.will.lines.forEach((line, idx) => {
+					translations.push([line, (out) => {
+						player.will.lines[idx] = out
+						player.will.origLines[idx] = line
+					}])
+				})
+			}
+			if(player.note && wip.turkishPlayers.has(player.note.owner)) {
+				player.note.origLines = []
+				player.note.lines.forEach((line, idx) => {
+					translations.push([line, (out) => {
+						player.note.lines[idx] = out
+						player.note.origLines[idx] = line
+					}])
+				})
+			}
+		})
+		const data = new FormData();
+		translations.forEach(([text, cb]) => {
+			data.append('text', text)
+		})
+		const resp = await fetch('https://translate.yandex.net/api/v1.5/tr.json/translate?lang=en&key=trnsl.1.1.20170221T160601Z.4ec8852ebdc07717.86c1e522299e1c9817ad9a18037d10dc65ad26ec', {method: 'POST', body: data})
+		const json = await resp.json()
+		json.text.forEach((out, idx) => {
+			translations[idx][1](out)
+		})
+		dispatch({type: 'TRANSLATED', report: wip})
 	}
 }
