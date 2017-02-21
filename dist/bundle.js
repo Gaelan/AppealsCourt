@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "436b25c7625505a8940f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "64b4c7d795782cfd24e2"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -903,7 +903,7 @@ var getJudgeReportCount = function () {
 
 					case 5:
 						text = _context7.sent;
-						match = /Unresolved Reports(\d+)/.exec(text);
+						match = /Unresolved Reports (\d+)/.exec(text);
 						return _context7.abrupt('return', match && match[1]);
 
 					case 8:
