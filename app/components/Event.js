@@ -61,6 +61,12 @@ function LeaveEvent(props) {
 	</p>
 }
 
+function UnknownEvent(props) {
+	return <p className={Styles.default}>
+		This text appeared in the report, but I have no idea what it means. Please report to DoodleFungus with the report ID: {props.event.text}
+	</p>
+}
+
 function VotesEvent(props) {
 	console.time('votes')
 	const ret = <div>
@@ -103,7 +109,8 @@ const types = {
 	votes: VotesEvent,
 	remember: RememberEvent,
 	revive: ReviveEvent,
-	bite: BiteEvent
+	bite: BiteEvent,
+	unknown: UnknownEvent
 }
 
 export default class Event extends React.Component {

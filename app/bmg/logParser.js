@@ -68,8 +68,10 @@ class Parser {
 					scope: scope
 				})
 			} else {
-				console.error('unknown element', el)
-				throw new Error();
+				this.currentSubphase.events.push({
+					type: 'unknown',
+					text: el.html(),
+				})
 			}
 		})
 	}
@@ -266,8 +268,10 @@ class Parser {
 				}
 			}
 
-			console.error('unknown notice type', el)
-			throw new Error();
+			this.currentSubphase.events.push({
+				type: 'unknown',
+				text: el.html()
+			})
 		}
 	}
 

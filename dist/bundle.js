@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c83bb81b6678b06aeb2d"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "6ead953093235b5fd104"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1208,20 +1208,17 @@ function confirmJudgeVote(id, guilty, alternate) {
 	// Alternate = exception/request perma
 	return function () {
 		var _ref14 = _asyncToGenerator(regeneratorRuntime.mark(function _callee12(dispatch) {
-			var data, num;
+			var formPageData, data, num;
 			return regeneratorRuntime.wrap(function _callee12$(_context12) {
 				while (1) {
 					switch (_context12.prev = _context12.next) {
 						case 0:
 							dispatch({ type: 'VOTE_CONFIRMED' });
-							data = new FormData();
+							formPageData = new FormData();
 
-							data.append('action', 'closereport');
-							data.append('step', '201');
-							data.append('data', JSON.stringify(_defineProperty({
-								id: id,
-								vote: guilty ? 'g' : 'i'
-							}, guilty ? 'perm' : 'except', alternate)));
+							formPageData.append('action', 'closereport');
+							formPageData.append('step', '2');
+							formPageData.append('data', 'false');
 							_context12.next = 7;
 							return fetch('/Trial/manage/menu.php', {
 								method: 'POST',
@@ -1230,23 +1227,39 @@ function confirmJudgeVote(id, guilty, alternate) {
 							});
 
 						case 7:
+							data = new FormData();
+
+							data.append('action', 'closereport');
+							data.append('step', '201');
+							data.append('data', JSON.stringify(_defineProperty({
+								id: id,
+								vote: guilty ? 'g' : 'i'
+							}, guilty ? 'perm' : 'except', alternate)));
+							_context12.next = 13;
+							return fetch('/Trial/manage/menu.php', {
+								method: 'POST',
+								body: data,
+								credentials: 'include'
+							});
+
+						case 13:
 							_context12.t0 = loadViewReport;
-							_context12.next = 10;
+							_context12.next = 16;
 							return getJudgeReportId();
 
-						case 10:
+						case 16:
 							_context12.t1 = _context12.sent;
 							_context12.t2 = dispatch;
 							(0, _context12.t0)(_context12.t1, _context12.t2);
-							_context12.next = 15;
+							_context12.next = 21;
 							return getJudgeReportCount();
 
-						case 15:
+						case 21:
 							num = _context12.sent;
 
 							dispatch({ type: 'IS_JUDGE', judgeQueue: num });
 
-						case 17:
+						case 23:
 						case 'end':
 							return _context12.stop();
 					}
@@ -1535,8 +1548,10 @@ var Parser = function () {
 						scope: scope
 					});
 				} else {
-					console.error('unknown element', el);
-					throw new Error();
+					_this2.currentSubphase.events.push({
+						type: 'unknown',
+						text: el.html()
+					});
 				}
 			});
 		}
@@ -1752,8 +1767,10 @@ var Parser = function () {
 					}
 				}
 
-				console.error('unknown notice type', el);
-				throw new Error();
+				this.currentSubphase.events.push({
+					type: 'unknown',
+					text: el.html()
+				});
 			}
 		}
 	}, {
@@ -2107,7 +2124,7 @@ function Confirm(props) {
 				} },
 			props.isGuilty ? 'Guilty' : 'Innocent'
 		),
-		props.judge ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+		props.reportType == 'judge' ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'button',
 			{ className: __WEBPACK_IMPORTED_MODULE_2__styles_Confirm_css___default.a[props.isGuilty ? 'guiltyButton' : 'innoButton'], onClick: function onClick() {
 					return props.confirm(true);
@@ -2484,6 +2501,15 @@ function LeaveEvent(props) {
 	);
 }
 
+function UnknownEvent(props) {
+	return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+		'p',
+		{ className: __WEBPACK_IMPORTED_MODULE_5__styles_Event_css___default.a.default },
+		'This text appeared in the report, but I have no idea what it means. Please report to DoodleFungus with the report ID: ',
+		props.event.text
+	);
+}
+
 function VotesEvent(props) {
 	console.time('votes');
 	var ret = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -2571,7 +2597,8 @@ var types = {
 	votes: VotesEvent,
 	remember: RememberEvent,
 	revive: ReviveEvent,
-	bite: BiteEvent
+	bite: BiteEvent,
+	unknown: UnknownEvent
 };
 
 var Event = function (_React$Component) {
@@ -2620,6 +2647,8 @@ var _temp = function () {
 	__REACT_HOT_LOADER__.register(BiteEvent, 'BiteEvent', '/Users/Gaelan/Documents/AppealsCourt/app/components/Event.js');
 
 	__REACT_HOT_LOADER__.register(LeaveEvent, 'LeaveEvent', '/Users/Gaelan/Documents/AppealsCourt/app/components/Event.js');
+
+	__REACT_HOT_LOADER__.register(UnknownEvent, 'UnknownEvent', '/Users/Gaelan/Documents/AppealsCourt/app/components/Event.js');
 
 	__REACT_HOT_LOADER__.register(VotesEvent, 'VotesEvent', '/Users/Gaelan/Documents/AppealsCourt/app/components/Event.js');
 

@@ -11,7 +11,7 @@ export default function Confirm(props) {
 		<button className={Styles[props.isGuilty ? 'guiltyButton' : 'innoButton']} onClick={() => props.confirm(false)}>
 			{props.isGuilty ? 'Guilty' : 'Innocent'}
 		</button>
-		{props.judge ? (
+		{(props.reportType == 'judge') ? (
 			<button className={Styles[props.isGuilty ? 'guiltyButton' : 'innoButton']} onClick={() => props.confirm(true)}>
 				{props.isGuilty ? 'Permanent' : 'Exception'}
 			</button>

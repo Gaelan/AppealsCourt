@@ -143,6 +143,15 @@ export function confirmVote(guilty) {
 export function confirmJudgeVote(id, guilty, alternate) { // Alternate = exception/request perma
 	return async (dispatch) => {
 		dispatch({type: 'VOTE_CONFIRMED'})
+		const formPageData = new FormData()
+		formPageData.append('action', 'closereport')
+		formPageData.append('step', '2')
+		formPageData.append('data', 'false')
+		await fetch('/Trial/manage/menu.php', {
+			method: 'POST',
+			body: data,
+			credentials: 'include'
+		})
 		const data = new FormData()
 		data.append('action', 'closereport')
 		data.append('step', '201')
