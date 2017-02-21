@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7da798ef0816799eeac1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "e0e4c9f033a67059788d"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1208,25 +1208,45 @@ function confirmJudgeVote(id, guilty, alternate) {
 	// Alternate = exception/request perma
 	return function () {
 		var _ref14 = _asyncToGenerator(regeneratorRuntime.mark(function _callee12(dispatch) {
-			var formPageData, data, num;
+			var managerData, formPageData, data, num;
 			return regeneratorRuntime.wrap(function _callee12$(_context12) {
 				while (1) {
 					switch (_context12.prev = _context12.next) {
 						case 0:
 							dispatch({ type: 'VOTE_CONFIRMED' });
+							// Load viewReport in case some other tab messed up our session
+							_context12.next = 3;
+							return fetch('/Trial/viewReport.php?id=' + id, {
+								method: 'GET',
+								credentials: 'include'
+							});
+
+						case 3:
+							managerData = new FormData();
+
+							managerData.append('action', 'closereport');
+							managerData.append('step', '101');
+							_context12.next = 8;
+							return fetch('/Trial/manage/menu.php', {
+								method: 'POST',
+								body: managerData,
+								credentials: 'include'
+							});
+
+						case 8:
 							formPageData = new FormData();
 
 							formPageData.append('action', 'closereport');
 							formPageData.append('step', '2');
 							formPageData.append('data', 'false');
-							_context12.next = 7;
+							_context12.next = 14;
 							return fetch('/Trial/manage/menu.php', {
 								method: 'POST',
 								body: formPageData,
 								credentials: 'include'
 							});
 
-						case 7:
+						case 14:
 							data = new FormData();
 
 							data.append('action', 'closereport');
@@ -1235,31 +1255,31 @@ function confirmJudgeVote(id, guilty, alternate) {
 								id: id,
 								vote: guilty ? 'g' : 'i'
 							}, guilty ? 'perm' : 'except', alternate)));
-							_context12.next = 13;
+							_context12.next = 20;
 							return fetch('/Trial/manage/menu.php', {
 								method: 'POST',
 								body: data,
 								credentials: 'include'
 							});
 
-						case 13:
+						case 20:
 							_context12.t0 = loadViewReport;
-							_context12.next = 16;
+							_context12.next = 23;
 							return getJudgeReportId();
 
-						case 16:
+						case 23:
 							_context12.t1 = _context12.sent;
 							_context12.t2 = dispatch;
 							(0, _context12.t0)(_context12.t1, _context12.t2);
-							_context12.next = 21;
+							_context12.next = 28;
 							return getJudgeReportCount();
 
-						case 21:
+						case 28:
 							num = _context12.sent;
 
 							dispatch({ type: 'IS_JUDGE', judgeQueue: num });
 
-						case 23:
+						case 30:
 						case 'end':
 							return _context12.stop();
 					}
@@ -2303,7 +2323,7 @@ var DupeForm = function (_React$Component) {
 
 		var _this = _possibleConstructorReturn(this, (DupeForm.__proto__ || Object.getPrototypeOf(DupeForm)).call(this));
 
-		_this.state = {};
+		_this.state = { reason: 1 };
 		return _this;
 	}
 

@@ -27,7 +27,7 @@ export default class DupeForm extends React.Component {
 
 	constructor() {
 		super()
-		this.state = {}
+		this.state = {reason: 1}
 	}
 
 	setReason(evt) {
