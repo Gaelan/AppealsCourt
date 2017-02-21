@@ -73,7 +73,7 @@ async function getJudgeReportCount() { // returns false if not a judge
 
 	const text = await resp.text()
 
-	const match = /Unresolved Reports (\d+)/.exec(text)
+	const match = /Unresolved Reports \((\d+)\)/.exec(text)
 
 	return match && match[1]
 }
