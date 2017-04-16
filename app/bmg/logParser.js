@@ -156,7 +156,7 @@ class Parser {
 	}
 
 	handleWhisper(el) {
-		const [_, from, to, message] = /(.+) to (.+): (.*)/.exec(el.html())
+		const [_, from, to, message] = /([^:]+) to ([^:]+): (.*)/.exec(el.html())
 		this.checkTurkish(message, this.playersByName[from] && this.playersByName[from].ign)
 		this.currentSubphase.events.push({
 			type: 'whisper',
